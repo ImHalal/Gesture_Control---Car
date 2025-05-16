@@ -30,7 +30,7 @@ Transmitter Side (Remote Controller):
 - Arduino Nano
 - MPU6050 Module
 - HC-05 Bluetooth Module
-- Power source (e.g., 7.4V)
+- Power source (e.g., 7.4V battery)
 - Jumper wires / tin
 - Breadboard / PCB
 
@@ -202,8 +202,9 @@ HC-05 Bluetooth Module
   → Confirm both modules are on same baud rate and power supply is stable.
   → Try swapping TX/RX lines if unsure of orientation.
 
-**If those procedures do not work, try searching further on the internet.
-  If the problem still persists, there is a possibility that the module may be faulty or damaged.**
+
+**If those procedures do not work, try searching further on the internet. If the problem still persists, there is a possibility that the module may be faulty or damaged.**
+
 
 General Tips :
 - Always share **common ground** between modules.
