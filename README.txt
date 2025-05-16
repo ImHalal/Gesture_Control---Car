@@ -6,7 +6,7 @@ README - Arduino Bluetooth-Controlled Robot (L298N + MPU6050)
 Project Description
 -------------------
 
-This project demonstrates how to build a basic robot controlled via Bluetooth using an HC-05 module, an L298N motor driver, and an MPU6050 (Electronic Cats version) accelerometer. 
+This project demonstrates how to build a basic robot controlled via Bluetooth using an HC-05 module, an L298N motor driver, and an MPU6050 accelerometer. 
 The robot receives directional commands from a remote MPU6050 controller and moves accordingly: Forward, Backward, Left, Right, or Idle (Stop).
 
 This setup can be extended for gesture-based control, obstacle avoidance, remote telemetry, any many more.
