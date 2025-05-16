@@ -48,14 +48,14 @@ HC-05 Module:
 - VCC → 5V (from Nano)
 - GND → GND (from Nano)
 - TX → Pin 4 (or any available digital pin: 2–9)
-- RX → Pin 5 (with voltage divider, or any from 2–9)
+- RX → Pin 5 (with voltage divider (optional), or any from 2–9)
 
 L298N Motor Driver:
 - IN1 → Pin 3
 - IN2 → Pin 6
 - IN3 → Pin 9
 - IN4 → Pin 10
-(Alternate: use any 4 of pins 3, 5, 6, 9, 10, 11 — best: 9 & 11 for IN3 & IN4)
+(Alternate: use any 4 of pins 3, 5, 6, 9, 10, 11 — best: 9 & 11 (since there's no collided timer on these pins))
 
 - OUT1, OUT2 → Left DC Motor
 - OUT3, OUT4 → Right DC Motor
@@ -119,9 +119,25 @@ How to Use
 
 1. Upload the **Gesture_car_transmitter_code** to the controller.
 2. Upload the **Gesture_car_receiver_code** to the robot.
-3. Power both devices and ensure Bluetooth pairing between HC-05 modules.
-4. Tilt the transmitter to send motion commands.
-5. Robot responds with real-time movement.
+3. Make sure HC-05 modules paired correctly:
+  → Hold the HC-05 button when powered it up until it blinks slowly (to enter HC-05 AT mode)
+  → Test it by send "OK" in Serial Monitor, if it responds back by saying "OK", that means it works
+  → For Slave HC-05:
+      AT+ROLE=0                 // Set role to Slave
+      AT+NAME=Slave             // (Optional) Set custom module name
+      AT+UART=9600,0,0          // Set baud rate (9600), stop bit, and parity
+      AT+ADDR?                  // Returns device MAC address (needed by master)
+
+  → For Master HC-05:
+      AT+ROLE=1                 // Set role to Master
+      AT+CMODE=0                // Connect to a specific address
+      AT+ADDR=<slave_address>   // Replace with slave MAC address (e.g., 98D3:31:F4:5B:1B → Replace ":" with ",")
+      AT+INIT                   // Initialize SPP profile (if not already initialized)
+      AT+LINK=<slave_address>   // Attempt to connect to slave
+
+4. Power both devices and ensure Bluetooth pairing between HC-05 modules.
+5. Tilt the transmitter to send motion commands.
+6. Robot responds with real-time movement.
 
 
 Troubleshooting
