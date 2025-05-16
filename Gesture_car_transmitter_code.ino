@@ -1,79 +1,107 @@
-#include <Wire.h>
-#include <I2Cdev.h>
-#include <MPU6050.h>
-#include <SoftwareSerial.h>
+/*
+ * ================================================
+ * Arduino Gesture-Based Bluetooth Transmitter
+ * ----------------------------------------
+ * Transmits directional commands via Bluetooth
+ * based on MPU6050 accelerometer data.
+ *
+ * Components:
+ * - Arduino Nano
+ * - MPU6050 Accelerometer (Electronic Cats)
+ * - HC-05 Bluetooth Module
+ *
+ * Author: HalalBrother / ImHalal
+ * GitHub: https://github.com/your-repo-link
+ * License: Your choice
+ * ================================================
+ */
 
-//MPU6050
-MPU6050 mpu;
+#include <Wire.h>              // For I2C communication
+#include <I2Cdev.h>            // I2C device helper (required by MPU6050 lib)
+#include <MPU6050.h>           // Electronic Cats version of MPU6050 driver
+#include <SoftwareSerial.h>    // For serial comm with HC-05
+
+// --------- MPU6050 Setup ---------
+MPU6050 mpu;                   // Create MPU6050 object
+
+// Raw sensor values
 int16_t ax, ay, az;
 int16_t gx, gy, gz;
 
+// Struct for future expansion (if you send raw X/Y/Z via Bluetooth)
 struct MyData {
   byte X;
   byte Y;
   byte Z;
 };
 
-MyData data;
+MyData data; // Create data container
 
-// HC-05
-SoftwareSerial BTSerial(4, 5);
+// --------- HC-05 Bluetooth Setup ---------
+SoftwareSerial BTSerial(4, 5); // RX = pin 4, TX = pin 5 (connects to HC-05)
 
+// ===================================================
+// SETUP: Runs once during startup
+// ===================================================
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(9600);         // USB Serial Monitor (for debugging)
 
-  //HC-05
-  BTSerial.begin(9600); // HC-05 default baud
+  // Start Bluetooth serial (default HC-05 baud rate)
+  BTSerial.begin(9600);
 
-  //MPU6050
+  // Initialize I2C for MPU6050
   Wire.begin();
-  mpu.initialize();
+  mpu.initialize();          // Starts MPU6050 IMU
 }
 
+// ===================================================
+// LOOP: Runs repeatedly after setup()
+// ===================================================
 void loop() {
-  //MPU6050 Data
+  // --- 1. Read raw MPU6050 data (accel & gyro) ---
   mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+
+  // --- 2. Normalize acceleration values to 0–255 scale ---
+  //     These mapped values can be sent over Bluetooth or used as control triggers.
   data.X = map(ax, -17000, 17000, 0, 255);
   data.Y = map(ay, -17000, 17000, 0, 255);
   data.Z = map(az, -17000, 17000, 0, 255);
 
-  //Optional: print to USB Serial
+  // --- 3. Optional: Print to Serial Monitor for debugging ---
   Serial.print("X = ");
   Serial.print(data.X);
-  Serial.print(" Y = ");
+  Serial.print(" | Y = ");
   Serial.print(data.Y);
-  Serial.print(" Z = ");
+  Serial.print(" | Z = ");
   Serial.println(data.Z);
 
-  //Send to Bluetooth
+  // --- 4. Decide direction command based on tilt ---
+  // Logic:
+  // - Y axis determines Forward/Backward
+  // - X axis determines Left/Right
+  // - If neutral, send Idle ('I')
 
-  //MPU6050 Data
-  //BTSerial.print(data.X);
-  //BTSerial.print(",");
-  //BTSerial.print(data.Y);
-  //BTSerial.print(",");
-  //BTSerial.println(data.Z);
+  char command = 'I'; // Default command = Idle
 
-// L298N Data & Logic
+  // Forward: tilt forward (Y low)
+  if (data.Y < 87) {
+    command = 'F';
+  }
+  // Backward: tilt backward (Y high)
+  else if (data.Y > 187) {
+    command = 'B';
+  }
+  // If Y is neutral, check for left/right
+  else if (data.X > 195) {
+    command = 'L'; // Tilted left
+  }
+  else if (data.X < 95) {
+    command = 'R'; // Tilted right
+  }
 
-char command = 'I'; // Default to Idle
+  // --- 5. Send command via Bluetooth ---
+  BTSerial.println(command);
 
-// Determine direction based on Y axis
-if (data.Y < 87) {
-  command = 'F'; // Forward
-} else if (data.Y > 187) {
-  command = 'B'; // Backward
-}
-// Determine direction based on X axis only if Y is neutral
-else if (data.X > 195) {
-  command = 'L'; // Left
-} else if (data.X < 95) {
-  command = 'R'; // Right
-}
-
-// Send single command
-BTSerial.println(command);
-
-delay(100);
-
+  // --- 6. Delay for stability (reduce jitter) ---
+  delay(100); // 100ms delay = ~10Hz command rate
 }
