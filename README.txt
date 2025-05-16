@@ -9,7 +9,7 @@ Project Description
 This project demonstrates how to build a basic robot controlled via Bluetooth using an HC-05 module, an L298N motor driver, and an MPU6050 accelerometer. 
 The robot receives directional commands from a remote MPU6050 controller and moves accordingly: Forward, Backward, Left, Right, or Idle (Stop).
 
-This setup can be extended for gesture-based control, obstacle avoidance, remote telemetry, any many more.
+This setup can be extended for gesture-based control, obstacle avoidance, remote telemetry, and many more.
 
 
 Hardware Components
@@ -120,8 +120,8 @@ How to Use
 1. Upload the **Gesture_car_transmitter_code** to the controller.
 2. Upload the **Gesture_car_receiver_code** to the robot.
 3. Make sure HC-05 modules paired correctly:
-  → Hold the HC-05 button when powered it up until it blinks slowly (to enter HC-05 AT mode)
-  → Test it by send "OK" in Serial Monitor, if it responds back by saying "OK", that means it works
+  → Hold the HC-05 button when powering it up until it blinks slowly (to enter HC-05 AT mode)
+  → Test it by send "AT" in Serial Monitor, if it responds back by saying "OK", that means it works
   → For Slave HC-05:
       AT+ROLE=0                 // Set role to Slave
       AT+NAME=Slave             // (Optional) Set custom module name
@@ -215,8 +215,8 @@ General Tips :
 License
 -------
 
-Feel free to use and modify :).
-No need for credit ~.
+Use and modify freely!
+No credit necessary — though a shoutout would be appreciated.
 
 
 Author
