@@ -21,18 +21,22 @@ Receiver Side (Robot):
 - HC-05 Bluetooth Module
 - L298N Motor Driver Module
 - 4 DC Motors
-- Power Supply (e.g., 7.4V or 12V battery)
-- Jumper wires
+- Power Supply (e.g., 7.4V battery)
+- Jumper wires / tin
 - Breadboard / PCB
 
 Transmitter Side (Remote Controller):
 - Body
 - Arduino Nano
-- MPU6050 Module (Electronic Cats recommended)
+- MPU6050 Module
 - HC-05 Bluetooth Module
-- Power source (e.g., 7.4V or 12V battery)
-- Jumper wires
+- Power source (e.g., 7.4V)
+- Jumper wires / tin
 - Breadboard / PCB
+
+Charger (if using rechargeable power supply (e.g., double 18650 Li-ion 3.7V, (7.4V)):
+- 2 TP4056 Module
+- 2 Two Battery Slot
 
 
 Wiring Summary
@@ -41,39 +45,44 @@ Wiring Summary
 Receiver (Bluetooth Robot):
 
 HC-05 Module:
-- VCC  → 5V
-- GND  → GND
-- TX   → Pin 4 or ( 2 - 9)
-- RX   → Pin 5 or ( 2 - 9)
+- VCC → 5V (from Nano)
+- GND → GND (from Nano)
+- TX → Pin 4 (or any available digital pin: 2–9)
+- RX → Pin 5 (with voltage divider, or any from 2–9)
 
 L298N Motor Driver:
-- IN1  → Pin 3
-- IN2  → Pin 6
-- IN3  → Pin 9
-- IN4  → Pin 10
-- or (3, 5, 6, 9, 10, 11), (9 & 11 is the best option)
+- IN1 → Pin 3
+- IN2 → Pin 6
+- IN3 → Pin 9
+- IN4 → Pin 10
+(Alternate: use any 4 of pins 3, 5, 6, 9, 10, 11 — best: 9 & 11 for IN3 & IN4)
 
-- Output → DC motors
-- Nano ViN → L298N 12V  → Switch → Battery power positive
-- Nano GND → L298N GND  → Switch → Battery power negative
+- OUT1, OUT2 → Left DC Motor
+- OUT3, OUT4 → Right DC Motor
+- L298N VCC → 12V (from battery via switch) → Nano VIN
+- L298N GND → Battery negative → Nano GND
 
 Transmitter (MPU6050 + Bluetooth):
 
 MPU6050:
-- VCC  → 5V
-- GND  → GND
-- SDA  → A4
-- SCL  → A5
+- VCC → 5V (from Nano)
+- GND → GND (from Nano)
+- SDA → A4
+- SCL → A5
 
 HC-05:
-- VCC  → 5V
-- GND  → GND
-- TX   → Pin 4 or ( 2 - 9)
-- RX   → Pin 5 or ( 2 - 9)
+- VCC → 5V (from Nano)
+- GND → GND (from Nano)
+- TX → Pin 4 (or any available digital pin: 2–9)
+- RX → Pin 5 (with voltage divider, or any from 2–9)
 
-- Battery power → Switch
-- Switch positive → ViN (Nano)
-- Switch negative → GND (Nano)
+Power Supply:
+- Battery positive → Switch → Nano VIN
+- Battery negative → Switch → Nano GND
+
+Charger:
+- TP4056 B+ → Battery Positive
+- TP4056 B- → Battery Negative
 
 Arduino Library Dependencies
 ----------------------------
@@ -83,7 +92,7 @@ Install the following libraries via Arduino IDE Library Manager:
 1. SoftwareSerial (built-in)
 2. Wire (built-in)
 3. MPU6050_light by Electronic Cats
-   - Install via Library Manager: Search for "MPU6050 Electronic Cats"
+   - Install via Library Manager or Internet: Search for "MPU6050 Electronic Cats"
 
 
 Code Description
@@ -190,7 +199,8 @@ General Tips :
 License
 -------
 
-Feel free to use and modify. No need for credit
+Feel free to use and modify :).
+No need for credit ~.
 
 
 Author
